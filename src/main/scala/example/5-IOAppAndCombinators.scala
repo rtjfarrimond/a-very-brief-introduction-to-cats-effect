@@ -34,6 +34,9 @@ object IOAppAndCombinators extends IOApp.Simple {
   def runSequentially[A](foo: IO[A], bar: IO[A]): IO[A] =
     IO(println("Running on the same thread...")) >> foo >> bar
 
+  // IOs can be raced, such that they execute on different threads and the
+  // result of the first to complete is returned in an Either. The losing
+  // thread is cancelled.
   def returnFastest[A, B](ioa: IO[A], iob: IO[B]): IO[Either[A, B]] =
     IO.race(ioa, iob).flatTap(either => IO(println(either)))
 
